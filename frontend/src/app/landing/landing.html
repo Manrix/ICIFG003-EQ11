@@ -1,0 +1,40 @@
+<div class="landing-page">
+  <!-- Contenedor de formas de fondo (Burbujas) -->
+  <div class="background-shapes">
+    <div class="shape bubble-1"></div>
+    <div class="shape bubble-2"></div>
+    <div class="shape bubble-3"></div>
+    <div class="shape bubble-4"></div>
+    <div class="shape bubble-5"></div>
+    <div class="shape bubble-6"></div>
+    <div class="shape bubble-7"></div>
+    <div class="shape bubble-8"></div>
+    <div class="shape bubble-9"></div>
+    <div class="shape bubble-10"></div>
+  </div>
+
+  <header class="header">
+    <div class="logo">
+      <span class="school-name">Colegio Marcela Paz</span>
+    </div>
+    <nav class="nav-actions">
+      <button class="btn-register" (click)="openRegister()">Registrarse</button>
+      <button class="btn-login" (click)="openLogin()">Iniciar Sesión</button>
+    </nav>
+  </header>
+
+  <main class="hero">
+    <div class="hero-content">
+      <h1>Gestión de Inasistencia e Inspectoría</h1>
+      <p>Plataforma oficial para el control y seguimiento administrativo de alumnos.</p>
+    </div>
+  </main>
+
+  <!-- Modal Overlay -->
+  <div class="modal-overlay" *ngIf="showLoginModal" (click)="closeLogin($event)">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="closeLogin($event)">&times;</button>
+      <app-login></app-login>
+    </div>
+  </div>
+</div>

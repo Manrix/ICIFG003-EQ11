@@ -1,0 +1,278 @@
+.landing-page {
+  font-family: sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f4f8; /* Un gris-azulado muy claro de base */
+  position: relative;
+  overflow: hidden; /* Evita que las burbujas generen scroll */
+}
+
+/* =========================================
+   FORMAS DE FONDO (BURBUJAS)
+   ========================================= */
+.background-shapes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none; /* Para que no interfieran con los clicks */
+}
+
+.shape {
+  position: absolute;
+  border-radius: 50%;
+}
+
+/*
+  Burbujas en capas con diferentes tonos para profundidad.
+  Tonos:
+  - Azul oficial: #1b2560
+  - Azul medio (más claro): #2f3a8f
+  - Azul claro: #5b7cfa
+  - Dorado: #ffb300
+*/
+
+/* Fondo profundo (muy grandes + mucho blur) */
+.bubble-1 {
+  width: 720px;
+  height: 720px;
+  background: rgba(27, 37, 96, 0.06);
+  top: -220px;
+  left: -180px;
+  filter: blur(60px);
+}
+
+.bubble-2 {
+  width: 620px;
+  height: 620px;
+  background: rgba(91, 124, 250, 0.06);
+  bottom: -220px;
+  right: -220px;
+  filter: blur(70px);
+}
+
+.bubble-5 {
+  width: 520px;
+  height: 520px;
+  background: rgba(47, 58, 143, 0.05);
+  bottom: 5%;
+  left: 35%;
+  filter: blur(65px);
+}
+
+/* Plano medio (medianas + blur medio) */
+.bubble-3 {
+  width: 320px;
+  height: 320px;
+  background: rgba(27, 37, 96, 0.08);
+  top: 38%;
+  left: 10%;
+  filter: blur(28px);
+}
+
+.bubble-6 {
+  width: 260px;
+  height: 260px;
+  background: rgba(91, 124, 250, 0.08);
+  top: 18%;
+  left: 55%;
+  filter: blur(26px);
+}
+
+.bubble-7 {
+  width: 220px;
+  height: 220px;
+  background: rgba(255, 179, 0, 0.09);
+  top: 55%;
+  right: 10%;
+  filter: blur(22px);
+}
+
+/* Plano cercano (pequeñas + poco blur, más visibles) */
+.bubble-4 {
+  width: 140px;
+  height: 140px;
+  background: rgba(255, 179, 0, 0.18);
+  top: 22%;
+  right: 18%;
+  filter: blur(10px);
+}
+
+.bubble-8 {
+  width: 110px;
+  height: 110px;
+  background: rgba(47, 58, 143, 0.16);
+  top: 68%;
+  left: 22%;
+  filter: blur(10px);
+}
+
+.bubble-9 {
+  width: 90px;
+  height: 90px;
+  background: rgba(91, 124, 250, 0.18);
+  top: 12%;
+  right: 44%;
+  filter: blur(8px);
+}
+
+.bubble-10 {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 179, 0, 0.22);
+  bottom: 18%;
+  left: 60%;
+  filter: blur(8px);
+}
+
+/* =========================================
+   CONTENIDO (Z-INDEX 10 PARA ESTAR SOBRE LAS BURBUJAS)
+   ========================================= */
+.header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 2rem;
+  /* Glassmorphism: Fondo semi-transparente con desenfoque */
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  border-bottom: 3px solid #ffb300; 
+}
+
+.school-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1b2560;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 1rem; /* Separación entre botones */
+  align-items: center;
+}
+
+/* Botón Secundario (Registrarse) */
+.btn-register {
+  background-color: transparent;
+  color: #1b2560;
+  border: 2px solid #1b2560;
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.btn-register:hover {
+  background-color: rgba(27, 37, 96, 0.1);
+}
+
+/* Botón Principal (Iniciar Sesión) */
+.btn-login {
+  background-color: #1b2560;
+  color: white;
+  border: 2px solid #1b2560;
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.btn-login:hover {
+  background-color: #ffb300; 
+  color: #1b2560;
+  border-color: #ffb300;
+}
+
+.hero {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.hero-content {
+  /* Añadimos un panel sutil tipo vidrio para que el texto resalte sobre las burbujas */
+  background: rgba(255, 255, 255, 0.6);
+  padding: 3rem;
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+}
+
+.hero-content h1 {
+  font-size: 2.8rem;
+  color: #1b2560;
+  margin-bottom: 1rem;
+  margin-top: 0;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  color: #444;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* =========================================
+   MODAL
+   ========================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(27, 37, 96, 0.7); 
+  backdrop-filter: blur(5px); /* Desenfoque del fondo al abrir el modal */
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 2.5rem;
+  border-radius: 8px;
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  border-top: 4px solid #ffb300;
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.close-btn:hover {
+  color: #1b2560;
+}
