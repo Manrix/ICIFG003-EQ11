@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/usuarios")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class UsuarioController {
 
     @Autowired
@@ -27,6 +27,17 @@ public class UsuarioController {
         Optional<UsuarioEntity> usuario = repository.findById(id);
         return usuario.map(ResponseEntity::ok)
                       .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody UsuarioEntity request) {
+        Optional<UsuarioEntity> usuario = repository.findByUsername(request.getUsername());
+        
+        if (usuario.isPresent() && usuario.get().getPassword().equals(request.getPassword())) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.status(401).body("Usuario Incorrecto");
+        }
     }
 
     @PostMapping
