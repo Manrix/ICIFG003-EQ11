@@ -8,21 +8,27 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 export class Auth {
   private http = inject(HttpClient);
   
-  // URL temporal para pruebas, apuntando al controlador de usuarios
-  private apiUrl = 'http://localhost:8080/api/v1/usuarios/login';
+  private baseUrl = 'http://localhost:8080/api/v1/usuarios';
 
   // Usamos un BehaviorSubject para que los componentes puedan reaccionar a cambios de estado
   private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
   isLoggedIn$ = this.loggedIn.asObservable();
 
-  login(credentials: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, credentials).pipe(
+  login(credentials: { username: string; password: string }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/login`, credentials).pipe(
       tap((response) => {
         // Asumiendo que el login simple solo devuelve un HTTP 200 si es exitoso
         localStorage.setItem('isLoggedIn', 'true');
         this.loggedIn.next(true);
       })
     );
+  }
+
+  register(data: { username: string; password: string }): Observable<any> {
+    return this.http.post<any>(this.baseUrl, {
+      ...data,
+      rol: 'DOCENTE',
+    });
   }
 
   logout() {
