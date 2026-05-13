@@ -1,65 +1,88 @@
 # Proyecto de Aplicaciones y Tecnologías de la Web
 
-Este es un repositorio que contiene una aplicación completa diseñada para la gestión de asistencia, desarrollada con **Spring Boot** en el Backend y **Angular** en el Frontend.
+Repositorio monorepo con una aplicación de control de asistencia:
 
-## 🏗️ Estructura del Proyecto
+- `backend/`: API REST en Spring Boot 2.5.9 con Java 17, JPA/Hibernate, Lombok y PostgreSQL.
+- `frontend/`: Aplicación Angular 21 con Vitest y Prettier.
 
-- **`backend/`**: API REST desarrollada en Spring Boot 2.5.9 (Java 17, Lombok, JPA/Hibernate, PostgreSQL).
-- **`frontend/`**: Aplicación de frontend desarrollada con Angular 21 (Standalone Components, Vitest, Prettier).
+## Requisitos previos
 
-## 🚀 Tecnologías y Stack
-
-**Backend:**
 - Java 17
-- Spring Boot 2.5.9
-- Spring Data JPA (Hibernate)
-- Base de datos PostgreSQL
-- Lombok
+- Node.js y npm
+- PostgreSQL en ejecución
 
-**Frontend:**
-- Angular 21 
-- TypeScript
-- Vitest para testing de unidad
-- Prettier para convenciones de formato
-- SCSS para estilos
+## Puesta en marcha completa
 
-## 💻 Instrucciones de Uso y Ejecución
+Ejecuta los pasos en este orden para levantar el proyecto de forma consistente.
 
-Primero, clona o descarga este repositorio y abre una terminal.
+### 1. Base de datos
 
-### Backend
+La aplicación usa la base `test` en `localhost:5432` con el usuario `postgres`.
 
-Abre una terminal y colócate en la carpeta `backend/`:
-cd backend
-# 1. Crear base de datos en terminal (psql)
+```bash
 createdb -U postgres test
+```
 
+Si prefieres crearla desde `psql`, también puedes usar:
 
-# 2. Compilar el proyecto (comprobar que no hay errores de sintaxis)
+```bash
+psql -U postgres
+CREATE DATABASE test;
+\q
+```
+
+### 2. Backend
+
+```bash
+cd backend
 ./mvnw compile
-
-# 3. Correr los tests disponibles
 ./mvnw test
-
-# 4. Levantar la aplicación en el puerto 8080
 ./mvnw spring-boot:run
+```
 
-### Frontend
+Comandos útiles adicionales:
 
-Abre otra terminal y colócate en la carpeta `frontend/`:
+```bash
+./mvnw clean compile
+./mvnw clean test
+```
 
+El backend arranca en `http://localhost:8080`.
+
+### 3. Frontend
+
+Abre otra terminal para el frontend:
+
+```bash
 cd frontend
-
-# 1. Instalar dependencias (solo la primera vez)
 npm install
-
-# 2. Levantar la aplicación en vivo en el puerto 4200
+npx prettier --check .
+npm test
 npm start
+```
 
+Comandos útiles adicionales:
 
+```bash
+npm run build
+npm run watch
+npx prettier --write .
+```
 
-## 📋 Documentación Adicional
+El frontend arranca en `http://localhost:4200`.
 
-- **Base de datos:** Puedes encontrar el modelo de la BD y sus entidades en `backend/docs/DBA.md`. Todas las entidades (Curso, Alumno, RegistroAsistencia, Justificativo) deben estar sincronizadas con este documento base.
-- **Prácticas Frontend:** Criterios estandarizados de desarrollo, nomenclatura, uso de Signals en Angular, paletas de colores y reglas restrictivas en `frontend/docs/practicas.md`.
+## Orden recomendado de trabajo
+
+1. Crear la base de datos.
+2. Compilar el backend con `./mvnw compile`.
+3. Ejecutar los tests del backend con `./mvnw test`.
+4. Verificar formato del frontend con `npx prettier --check .`.
+5. Ejecutar los tests del frontend con `npm test`.
+6. Levantar el backend con `./mvnw spring-boot:run`.
+7. Levantar el frontend con `npm start`.
+
+## Documentación adicional
+
+- Modelo de datos y entidades: `backend/docs/DBA.md`.
+- Reglas y prácticas de frontend: `frontend/docs/practicas.md`.
 
