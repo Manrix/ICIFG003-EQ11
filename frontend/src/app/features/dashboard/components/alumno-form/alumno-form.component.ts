@@ -1,44 +1,43 @@
-import { Component, input, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import {
+  MatDialogRef,
+  MatDialogContent,
+  MatDialogActions,
+  MatDialogTitle,
+} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import type { Alumno, AlumnoCreate } from '../../../../shared/models/alumno.model';
+
+export interface AlumnoDialogData {
+  alumno?: Alumno;
+  cursoId: number;
+}
 
 @Component({
   selector: 'app-alumno-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, MatDialogTitle, MatDialogContent, MatDialogActions],
   templateUrl: './alumno-form.component.html',
   styleUrl: './alumno-form.component.css',
 })
 export class AlumnoFormComponent {
   private readonly fb = inject(FormBuilder);
-  readonly activeModal = inject(NgbActiveModal);
+  private readonly dialogRef = inject(MatDialogRef<AlumnoFormComponent>);
+  private readonly data = inject(MAT_DIALOG_DATA) as AlumnoDialogData;
 
-  readonly alumno = input<Alumno | undefined>(undefined);
-  readonly cursoId = input<number>(0);
+  readonly isEditing = !!this.data?.alumno;
 
   readonly form = this.fb.nonNullable.group({
-    nombre: ['', Validators.required],
-    apellido: ['', Validators.required],
-    rut: ['', [Validators.required, Validators.pattern(/^\d{1,2}\.\d{3}\.\d{3}-[\dkK]$/)]],
-    estado: ['ACTIVO', Validators.required],
-    cursoId: [0, Validators.required],
+    nombre: [this.data?.alumno?.nombre ?? '', Validators.required],
+    apellido: [this.data?.alumno?.apellido ?? '', Validators.required],
+    rut: [
+      this.data?.alumno?.rut ?? '',
+      [Validators.required, Validators.pattern(/^\d{1,2}\.\d{3}\.\d{3}-[\dkK]$/)],
+    ],
+    estado: [this.data?.alumno?.estado ?? 'ACTIVO', Validators.required],
+    cursoId: [this.data?.cursoId ?? 0, Validators.required],
   });
-
-  constructor() {
-    const existing = this.alumno();
-    if (existing) {
-      this.form.patchValue({
-        nombre: existing.nombre,
-        apellido: existing.apellido,
-        rut: existing.rut,
-        estado: existing.estado,
-        cursoId: existing.cursoId,
-      });
-    } else {
-      this.form.patchValue({ cursoId: this.cursoId() });
-    }
-  }
 
   guardar(): void {
     if (this.form.invalid) {
@@ -46,10 +45,10 @@ export class AlumnoFormComponent {
       return;
     }
     const value: AlumnoCreate = this.form.getRawValue();
-    this.activeModal.close(value);
+    this.dialogRef.close(value);
   }
 
   cancelar(): void {
-    this.activeModal.dismiss('cancel');
+    this.dialogRef.close(undefined);
   }
 }

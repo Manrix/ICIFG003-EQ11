@@ -1,6 +1,7 @@
 import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgbModal, NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
+import { MatDialog } from '@angular/material/dialog';
+import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 
 import { AuthService } from '../../core/auth/auth';
@@ -42,7 +43,7 @@ import { AlumnoDetailComponent } from './components/alumno-detail/alumno-detail.
 export class DashboardPage implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
-  private readonly modal = inject(NgbModal);
+  private readonly dialog = inject(MatDialog);
 
   readonly cursoService = inject(CursoService);
   readonly alumnoService = inject(AlumnoService);
@@ -69,16 +70,22 @@ export class DashboardPage implements OnInit {
 
   readonly alumnoDetalle = computed(() => {
     const id = this.alumnoDetailId();
-    return this.alumnosDelCurso().find((a) => a.id === id) ?? null;
+    if (id === null) return null;
+    const alumnos = this.alumnoService.alumnos();
+    return alumnos.find((a) => a.id === id) ?? null;
   });
 
   readonly justificativosDetalle = computed(() => {
+    const alumnoId = this.alumnoDetailId();
+    if (alumnoId === null) return [];
     const registros = this.asistenciaService.registros();
     const map = this.justificativoService.justificativosMap();
     const result: Justificativo[] = [];
     for (const reg of registros) {
-      const list = map.get(reg.id) ?? [];
-      result.push(...list);
+      if (reg.alumnoId === alumnoId) {
+        const list = map.get(reg.id) ?? [];
+        result.push(...list);
+      }
     }
     return result;
   });
@@ -133,40 +140,45 @@ export class DashboardPage implements OnInit {
   }
 
   openCursoForm(curso?: Curso): void {
-    const modalRef = this.modal.open(CursoFormComponent);
-    modalRef.componentInstance.curso = curso;
-    modalRef.result
-      .then((result: CursoCreate) => {
+    const dialogRef = this.dialog.open(CursoFormComponent, {
+      data: { curso },
+      width: '480px',
+    });
+    dialogRef.afterClosed().subscribe((result: CursoCreate | undefined) => {
+      if (result) {
         this.saveCurso(result, curso?.id);
-      })
-      .catch(() => {});
+      }
+    });
   }
 
   openAlumnoForm(alumno?: Alumno): void {
     const cursoId = this.selectedCursoId();
     if (cursoId === null) return;
-    const modalRef = this.modal.open(AlumnoFormComponent);
-    modalRef.componentInstance.alumno = alumno;
-    modalRef.componentInstance.cursoId = cursoId;
-    modalRef.result
-      .then((result: AlumnoCreate) => {
+    const dialogRef = this.dialog.open(AlumnoFormComponent, {
+      data: { alumno, cursoId },
+      width: '480px',
+    });
+    dialogRef.afterClosed().subscribe((result: AlumnoCreate | undefined) => {
+      if (result) {
         this.saveAlumno(result, alumno?.id);
-      })
-      .catch(() => {});
+      }
+    });
   }
 
   openJustificativoForm(registro: RegistroAsistencia): void {
     const alumno = this.alumnosDelCurso().find((a) => a.id === registro.alumnoId);
-    const modalRef = this.modal.open(JustificativoFormComponent);
-    modalRef.componentInstance.registro = registro;
-    modalRef.componentInstance.alumnoNombre = alumno
-      ? `${alumno.nombre} ${alumno.apellido}`
-      : 'Alumno';
-    modalRef.result
-      .then((result: JustificativoCreate) => {
+    const dialogRef = this.dialog.open(JustificativoFormComponent, {
+      data: {
+        registro,
+        alumnoNombre: alumno ? `${alumno.nombre} ${alumno.apellido}` : 'Alumno',
+      },
+      width: '480px',
+    });
+    dialogRef.afterClosed().subscribe((result: JustificativoCreate | undefined) => {
+      if (result) {
         this.saveJustificativo(result);
-      })
-      .catch(() => {});
+      }
+    });
   }
 
   deleteCurso(id: number): void {
