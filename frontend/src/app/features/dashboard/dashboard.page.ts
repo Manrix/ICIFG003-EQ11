@@ -1,7 +1,7 @@
 import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbNavModule, NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 
 import { AuthService } from '../../core/auth/auth';
@@ -126,18 +126,63 @@ export class DashboardPage implements OnInit {
     this.router.navigate(['/']);
   }
 
-  selectCurso(id: number): void {
-    this.selectedCursoId.set(id);
-    this.alumnoDetailId.set(null);
+  async changeDate(fecha: string): Promise<void> {
+    if (this.registroDrafts().size > 0) {
+      const confirmed = await this.confirmarDescarte();
+      if (!confirmed) return;
+      this.registroDrafts.set(new Map());
+    }
+    this.selectedDate.set(fecha);
   }
 
-  changeTab(tab: 'alumnos' | 'asistencia'): void {
+  onNavChange(event: NgbNavChangeEvent): void {
+    const tab = event.nextId as 'alumnos' | 'asistencia';
+    if (this.registroDrafts().size > 0) {
+      event.preventDefault();
+      this.confirmarDescarte().then((confirmed) => {
+        if (confirmed) {
+          this.registroDrafts.set(new Map());
+          this.activeTab.set(tab);
+          this.alumnoDetailId.set(null);
+        }
+      });
+      return;
+    }
     this.activeTab.set(tab);
     this.alumnoDetailId.set(null);
   }
 
-  changeDate(fecha: string): void {
-    this.selectedDate.set(fecha);
+  async selectCurso(id: number): Promise<void> {
+    if (this.registroDrafts().size > 0) {
+      const confirmed = await this.confirmarDescarte();
+      if (!confirmed) return;
+      this.registroDrafts.set(new Map());
+    }
+    this.selectedCursoId.set(id);
+    this.alumnoDetailId.set(null);
+  }
+
+  presenteTodos(): void {
+    for (const alumno of this.alumnosDelCurso()) {
+      this.onCambiarEstado({
+        alumnoId: alumno.id,
+        estado: EstadoAsistencia.PRESENTE,
+        horaLlegada: undefined,
+        observacion: undefined,
+      });
+    }
+  }
+
+  confirmarDescarte(): Promise<boolean> {
+    return Swal.fire({
+      icon: 'warning',
+      title: 'Cambios sin guardar',
+      text: 'Tienes cambios de asistencia sin guardar. ¿Descartar y continuar?',
+      showCancelButton: true,
+      confirmButtonText: 'Descartar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#dc3545',
+    }).then((result) => result.isConfirmed);
   }
 
   openCursoForm(curso?: Curso): void {
@@ -185,6 +230,7 @@ export class DashboardPage implements OnInit {
   deleteCurso(id: number): void {
     this.cursoService.deleteCurso(id).subscribe({
       next: () => {
+        this.cursoService.loadCursos();
         Swal.fire({
           icon: 'success',
           title: 'Curso eliminado',
@@ -203,6 +249,10 @@ export class DashboardPage implements OnInit {
   deleteAlumno(id: number): void {
     this.alumnoService.deleteAlumno(id).subscribe({
       next: () => {
+        const cursoId = this.selectedCursoId();
+        if (cursoId !== null) {
+          this.alumnoService.loadAlumnos(cursoId);
+        }
         Swal.fire({
           icon: 'success',
           title: 'Alumno eliminado',
@@ -225,7 +275,10 @@ export class DashboardPage implements OnInit {
         : this.cursoService.createCurso(result);
     const msg = id !== undefined ? 'Curso actualizado' : 'Curso creado';
     action.subscribe({
-      next: () => Swal.fire({ icon: 'success', title: msg, timer: 1500, showConfirmButton: false }),
+      next: () => {
+        this.cursoService.loadCursos();
+        Swal.fire({ icon: 'success', title: msg, timer: 1500, showConfirmButton: false });
+      },
       error: () =>
         Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo guardar el curso.' }),
     });
@@ -238,7 +291,13 @@ export class DashboardPage implements OnInit {
         : this.alumnoService.createAlumno(result);
     const msg = id !== undefined ? 'Alumno actualizado' : 'Alumno creado';
     action.subscribe({
-      next: () => Swal.fire({ icon: 'success', title: msg, timer: 1500, showConfirmButton: false }),
+      next: () => {
+        const cursoId = this.selectedCursoId();
+        if (cursoId !== null) {
+          this.alumnoService.loadAlumnos(cursoId);
+        }
+        Swal.fire({ icon: 'success', title: msg, timer: 1500, showConfirmButton: false });
+      },
       error: () =>
         Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo guardar al alumno.' }),
     });
@@ -246,13 +305,15 @@ export class DashboardPage implements OnInit {
 
   saveJustificativo(result: JustificativoCreate): void {
     this.justificativoService.createJustificativo(result).subscribe({
-      next: () =>
+      next: () => {
+        this.justificativoService.loadJustificativos();
         Swal.fire({
           icon: 'success',
           title: 'Justificativo enviado',
           timer: 1500,
           showConfirmButton: false,
-        }),
+        });
+      },
       error: () =>
         Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo enviar el justificativo.' }),
     });

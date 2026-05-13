@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.DTOMapper;
+import com.example.demo.dto.JustificativoDTO;
 import com.example.demo.entity.JustificativoEntity;
 import com.example.demo.interfaces.JustificativoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,32 +19,40 @@ public class JustificativoController {
     @Autowired
     private JustificativoService justificativoService;
 
+    @Autowired
+    private DTOMapper mapper;
+
     @GetMapping
-    public Iterable<JustificativoEntity> getAll() {
-        return justificativoService.findAll();
+    public Iterable<JustificativoDTO> getAll(@RequestParam(required = false) Long registroAsistenciaId) {
+        if (registroAsistenciaId != null) {
+            return mapper.toJustificativoDTOList(justificativoService.findByRegistroAsistenciaId(registroAsistenciaId));
+        }
+        return mapper.toJustificativoDTOList(justificativoService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<JustificativoEntity> getById(@PathVariable Long id) {
-        Optional<JustificativoEntity> justificativo = justificativoService.findById(id);
+    public ResponseEntity<JustificativoDTO> getById(@PathVariable Long id) {
+        Optional<JustificativoDTO> justificativo = Optional.ofNullable(mapper.toDTO(justificativoService.findById(id).orElse(null)));
         return justificativo.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody JustificativoEntity justificativo) {
+    public ResponseEntity<?> create(@RequestBody JustificativoDTO justificativo) {
         try {
-            return new ResponseEntity<>(justificativoService.save(justificativo), HttpStatus.CREATED);
+            JustificativoEntity entity = mapper.toEntity(justificativo);
+            return new ResponseEntity<>(mapper.toDTO(justificativoService.save(entity)), HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody JustificativoEntity details) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody JustificativoDTO details) {
         try {
-            return justificativoService.update(id, details)
-                    .map(j -> new ResponseEntity<>(j, HttpStatus.OK))
+            JustificativoEntity entity = mapper.toEntity(details);
+            return justificativoService.update(id, entity)
+                    .map(j -> new ResponseEntity<>(mapper.toDTO(j), HttpStatus.OK))
                     .orElseGet(() -> ResponseEntity.notFound().build());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -58,7 +68,7 @@ public class JustificativoController {
     }
 
     @GetMapping("/registro/{registroAsistenciaId}")
-    public Iterable<JustificativoEntity> getByRegistroAsistenciaId(@PathVariable Long registroAsistenciaId) {
-        return justificativoService.findByRegistroAsistenciaId(registroAsistenciaId);
+    public Iterable<JustificativoDTO> getByRegistroAsistenciaId(@PathVariable Long registroAsistenciaId) {
+        return mapper.toJustificativoDTOList(justificativoService.findByRegistroAsistenciaId(registroAsistenciaId));
     }
 }

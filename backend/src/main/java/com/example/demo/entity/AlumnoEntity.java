@@ -17,6 +17,8 @@ public class AlumnoEntity {
     
     @NonNull
     private String nombre;
+
+    private String apellido;
     
     @NonNull
     private String rut;

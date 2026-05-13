@@ -1,15 +1,5 @@
 <div class="asistencia-header mb-3">
   <div class="row g-3 align-items-end">
-    <div class="col-md-4">
-      <label for="fecha" class="form-label">Fecha</label>
-      <input
-        id="fecha"
-        type="date"
-        class="form-control"
-        [value]="fecha()"
-        (change)="fechaChange.emit($any($event).target.value)"
-      />
-    </div>
     <div class="col-md-8">
       <div class="row g-2">
         <div class="col-4">
@@ -38,6 +28,24 @@
         </div>
       </div>
     </div>
+    <div class="col-md-4">
+      <label for="fecha" class="form-label">Fecha</label>
+      <input
+        id="fecha"
+        type="date"
+        class="form-control"
+        [value]="fecha()"
+        (change)="fechaChange.emit($any($event).target.value)"
+      />
+    </div>
+  </div>
+  <div class="d-flex justify-content-between align-items-center mt-3">
+    <button class="btn btn-outline-navy btn-sm" (click)="onMarcarTodosPresente()">
+      Marcar todos presente
+    </button>
+    @if (draftCount() > 0) {
+      <span class="badge badge-pendiente">{{ draftCount() }} cambios sin guardar</span>
+    }
   </div>
 </div>
 
@@ -49,7 +57,8 @@
   </div>
 } @else {
   <div class="asistencia-table-wrapper">
-    <div class="table-responsive">
+    <!-- Desktop table -->
+    <div class="table-responsive d-none d-md-block">
       <table class="table table-hover align-middle">
         <thead>
           <tr>
@@ -61,15 +70,45 @@
           </tr>
         </thead>
         <tbody>
-          @for (alumno of alumnos(); track alumno.id) {
-            @let reg = registroForAlumno(alumno.id);
-            <tr>
-              <td>{{ alumno.nombre }} {{ alumno.apellido }}</td>
+          @for (row of mergedRows(); track row.alumno.id) {
+            <tr class="row-{{ row.effectiveEstado.toLowerCase() }}" [class.row-draft]="row.isDraft">
               <td>
+                {{ row.alumno.nombre }} {{ row.alumno.apellido }}
+                @if (row.isDraft) {
+                  <span class="draft-pill">sin guardar</span>
+                }
+              </td>
+              <td>
+                <div class="estado-chips">
+                  <button
+                    type="button"
+                    class="estado-chip chip-presente"
+                    [class.active]="row.effectiveEstado === EstadoAsistencia.PRESENTE"
+                    (click)="selectEstado(row, EstadoAsistencia.PRESENTE)"
+                  >
+                    P
+                  </button>
+                  <button
+                    type="button"
+                    class="estado-chip chip-ausente"
+                    [class.active]="row.effectiveEstado === EstadoAsistencia.AUSENTE"
+                    (click)="selectEstado(row, EstadoAsistencia.AUSENTE)"
+                  >
+                    A
+                  </button>
+                  <button
+                    type="button"
+                    class="estado-chip chip-atrasado"
+                    [class.active]="row.effectiveEstado === EstadoAsistencia.ATRASADO"
+                    (click)="selectEstado(row, EstadoAsistencia.ATRASADO)"
+                  >
+                    T
+                  </button>
+                </div>
                 <select
-                  class="form-select form-select-sm"
-                  [value]="reg?.estado ?? EstadoAsistencia.PRESENTE"
-                  (change)="onEstadoChange(alumno.id, $event)"
+                  class="form-select form-select-sm mt-1"
+                  [value]="row.effectiveEstado"
+                  (change)="onEstadoChange(row, $event)"
                 >
                   @for (e of estados; track e) {
                     <option [value]="e">{{ e }}</option>
@@ -77,29 +116,39 @@
                 </select>
               </td>
               <td>
-                @if (reg?.estado === EstadoAsistencia.ATRASADO) {
+                @if (row.effectiveEstado === EstadoAsistencia.ATRASADO) {
                   <input
                     type="time"
                     class="form-control form-control-sm"
-                    [value]="reg?.horaLlegada ?? ''"
-                    (change)="onHoraLlegadaChange(alumno.id, $event)"
+                    [value]="row.effectiveHoraLlegada ?? ''"
+                    (change)="onHoraLlegadaChange(row, $event)"
                   />
                 } @else {
                   <span class="text-muted">—</span>
                 }
               </td>
               <td>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  [value]="reg?.observacion ?? ''"
-                  (change)="onObservacionChange(alumno.id, $event)"
-                  placeholder="Opcional"
-                />
+                @if (
+                  row.effectiveEstado === EstadoAsistencia.AUSENTE ||
+                  row.effectiveEstado === EstadoAsistencia.ATRASADO
+                ) {
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    [value]="row.effectiveObservacion ?? ''"
+                    (change)="onObservacionChange(row, $event)"
+                    placeholder="Opcional"
+                  />
+                } @else {
+                  <span class="text-muted">✓</span>
+                }
               </td>
               <td class="text-end">
-                @if (reg?.estado === EstadoAsistencia.AUSENTE) {
-                  <button class="btn btn-outline-navy btn-sm" (click)="justificar.emit(reg!)">
+                @if (row.effectiveEstado === EstadoAsistencia.AUSENTE) {
+                  <button
+                    class="btn btn-outline-navy btn-sm"
+                    (click)="justificar.emit(row.registro!)"
+                  >
                     Justificar
                   </button>
                 } @else {
@@ -115,10 +164,112 @@
         </tbody>
       </table>
     </div>
+
+    <!-- Mobile card layout -->
+    <div class="asistencia-cards d-md-none">
+      @for (row of mergedRows(); track row.alumno.id) {
+        <div
+          class="asistencia-card row-{{ row.effectiveEstado.toLowerCase() }}"
+          [class.row-draft]="row.isDraft"
+        >
+          <div class="card-header">
+            <span class="alumno-name"> {{ row.alumno.nombre }} {{ row.alumno.apellido }} </span>
+            @if (row.isDraft) {
+              <span class="draft-pill">sin guardar</span>
+            }
+          </div>
+          <div class="card-body">
+            <div class="card-field">
+              <span class="field-label">Estado</span>
+              <div class="estado-chips">
+                <button
+                  type="button"
+                  class="estado-chip chip-presente"
+                  [class.active]="row.effectiveEstado === EstadoAsistencia.PRESENTE"
+                  (click)="selectEstado(row, EstadoAsistencia.PRESENTE)"
+                >
+                  P
+                </button>
+                <button
+                  type="button"
+                  class="estado-chip chip-ausente"
+                  [class.active]="row.effectiveEstado === EstadoAsistencia.AUSENTE"
+                  (click)="selectEstado(row, EstadoAsistencia.AUSENTE)"
+                >
+                  A
+                </button>
+                <button
+                  type="button"
+                  class="estado-chip chip-atrasado"
+                  [class.active]="row.effectiveEstado === EstadoAsistencia.ATRASADO"
+                  (click)="selectEstado(row, EstadoAsistencia.ATRASADO)"
+                >
+                  T
+                </button>
+              </div>
+              <select
+                class="form-select form-select-sm mt-1"
+                [value]="row.effectiveEstado"
+                (change)="onEstadoChange(row, $event)"
+              >
+                @for (e of estados; track e) {
+                  <option [value]="e">{{ e }}</option>
+                }
+              </select>
+            </div>
+            <div class="card-field">
+              <span class="field-label">Hora Llegada</span>
+              @if (row.effectiveEstado === EstadoAsistencia.ATRASADO) {
+                <input
+                  type="time"
+                  class="form-control form-control-sm"
+                  [value]="row.effectiveHoraLlegada ?? ''"
+                  (change)="onHoraLlegadaChange(row, $event)"
+                />
+              } @else {
+                <span class="text-muted">—</span>
+              }
+            </div>
+            <div class="card-field">
+              <span class="field-label">Observación</span>
+              @if (
+                row.effectiveEstado === EstadoAsistencia.AUSENTE ||
+                row.effectiveEstado === EstadoAsistencia.ATRASADO
+              ) {
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  [value]="row.effectiveObservacion ?? ''"
+                  (change)="onObservacionChange(row, $event)"
+                  placeholder="Opcional"
+                />
+              } @else {
+                <span class="text-muted">✓</span>
+              }
+            </div>
+            <div class="card-field">
+              <span class="field-label">Acciones</span>
+              @if (row.effectiveEstado === EstadoAsistencia.AUSENTE) {
+                <button
+                  class="btn btn-outline-navy btn-sm"
+                  (click)="justificar.emit(row.registro!)"
+                >
+                  Justificar
+                </button>
+              } @else {
+                <span class="text-muted">—</span>
+              }
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="text-center text-muted py-4">No hay alumnos en este curso</div>
+      }
+    </div>
   </div>
 
   <div class="asistencia-footer">
-    <button class="btn btn-gold" (click)="guardar.emit()">
+    <button class="btn btn-gold" (click)="guardar.emit()" [disabled]="draftCount() === 0">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="16"

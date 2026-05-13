@@ -5,13 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BatchRegistroAsistenciaResponse {
-    private List<RegistroAsistenciaDTO> savedRecords;
-    private int totalSaved;
+public class CursoDTO {
+    private Long id;
+    private String nombre;
+    private String nivel;
+    private Integer anio;
 }

@@ -1,6 +1,5 @@
 package com.example.demo.dto;
 
-import com.example.demo.entity.RegistroAsistenciaEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,5 +12,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BatchRegistroAsistenciaRequest {
-    private List<RegistroAsistenciaEntity> registros;
+    private List<RegistroAsistenciaDTO> registros;
 }

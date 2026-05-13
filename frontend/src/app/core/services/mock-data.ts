@@ -62,12 +62,14 @@ export const MOCK_ALUMNOS: Alumno[] = [
   },
 ];
 
+const today = new Date().toISOString().split('T')[0];
+
 export const MOCK_REGISTROS: RegistroAsistencia[] = [
   {
     id: 1,
     alumnoId: 1,
     cursoId: 1,
-    fecha: '2024-05-13',
+    fecha: today,
     estado: EstadoAsistencia.PRESENTE,
     horaLlegada: null,
     observacion: null,
@@ -76,7 +78,7 @@ export const MOCK_REGISTROS: RegistroAsistencia[] = [
     id: 2,
     alumnoId: 2,
     cursoId: 1,
-    fecha: '2024-05-13',
+    fecha: today,
     estado: EstadoAsistencia.AUSENTE,
     horaLlegada: null,
     observacion: 'No se presentó',
@@ -85,7 +87,7 @@ export const MOCK_REGISTROS: RegistroAsistencia[] = [
     id: 3,
     alumnoId: 3,
     cursoId: 2,
-    fecha: '2024-05-13',
+    fecha: today,
     estado: EstadoAsistencia.ATRASADO,
     horaLlegada: '09:15',
     observacion: 'Llegó tarde por tránsito',
@@ -94,7 +96,7 @@ export const MOCK_REGISTROS: RegistroAsistencia[] = [
     id: 4,
     alumnoId: 4,
     cursoId: 2,
-    fecha: '2024-05-13',
+    fecha: today,
     estado: EstadoAsistencia.PRESENTE,
     horaLlegada: null,
     observacion: null,
@@ -103,7 +105,7 @@ export const MOCK_REGISTROS: RegistroAsistencia[] = [
     id: 5,
     alumnoId: 5,
     cursoId: 3,
-    fecha: '2024-05-13',
+    fecha: today,
     estado: EstadoAsistencia.PRESENTE,
     horaLlegada: null,
     observacion: null,
@@ -112,7 +114,7 @@ export const MOCK_REGISTROS: RegistroAsistencia[] = [
     id: 6,
     alumnoId: 6,
     cursoId: 3,
-    fecha: '2024-05-13',
+    fecha: today,
     estado: EstadoAsistencia.AUSENTE,
     horaLlegada: null,
     observacion: null,
