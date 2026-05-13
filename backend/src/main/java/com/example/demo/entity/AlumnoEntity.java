@@ -20,6 +20,7 @@ public class AlumnoEntity {
     @NonNull
     private String rut;
     
-    @NonNull
-    private String curso;
+    @ManyToOne
+    @JoinColumn(name = "curso_id")
+    private CursoEntity curso;
 }
