@@ -31,14 +31,17 @@ Primero, clona o descarga este repositorio y abre una terminal.
 
 Abre una terminal y colócate en la carpeta `backend/`:
 cd backend
+# 1. Crear base de datos en terminal (psql)
+createdb -U postgres test
 
-# 1. Compilar el proyecto (comprobar que no hay errores de sintaxis)
+
+# 2. Compilar el proyecto (comprobar que no hay errores de sintaxis)
 ./mvnw compile
 
-# 2. Correr los tests disponibles
+# 3. Correr los tests disponibles
 ./mvnw test
 
-# 3. Levantar la aplicación en el puerto 8080
+# 4. Levantar la aplicación en el puerto 8080
 ./mvnw spring-boot:run
 
 ### Frontend
