@@ -1,8 +1,22 @@
 package com.example.demo.entity;
 
-import javax.persistence.*;
-import lombok.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
+
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
@@ -19,10 +33,11 @@ public class RegistroAsistenciaEntity {
     @JoinColumn(name = "alumno_id")
     private AlumnoEntity alumno;
     
-    @NonNull
-    private String tipo;
-    
     private LocalDate fecha;
     
-    private String motivo;
+    private LocalTime horaLlegada;
+
+    private LocalTime estado;
+
+    private String observacion;
 }
