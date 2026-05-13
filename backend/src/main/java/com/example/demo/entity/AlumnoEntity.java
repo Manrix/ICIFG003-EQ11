@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import javax.persistence.*;
 import lombok.*;
+import com.example.demo.enums.EstadoAlumno;
 
 @Data
 @Entity
@@ -23,4 +24,7 @@ public class AlumnoEntity {
     @ManyToOne
     @JoinColumn(name = "curso_id")
     private CursoEntity curso;
+
+    @Enumerated(EnumType.STRING)
+    private EstadoAlumno estado = EstadoAlumno.ACTIVO;
 }
