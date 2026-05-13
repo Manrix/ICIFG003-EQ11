@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.example.demo.enums.EstadoAsistencia;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,7 +39,8 @@ public class RegistroAsistenciaEntity {
     
     private LocalTime horaLlegada;
 
-    private LocalTime estado;
+    @Enumerated(EnumType.STRING)
+    private EstadoAsistencia estado;
 
     private String observacion;
 }
