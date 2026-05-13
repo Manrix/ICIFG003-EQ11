@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 @Data
@@ -19,8 +20,8 @@ public class UsuarioEntity {
     private String username;
     
     @NonNull
+    @JsonIgnore
     private String password;
     
-    //@NonNull
-    //private String rol;
+    private String rol;
 }
