@@ -3,13 +3,13 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #f0f4f8; /* Un gris-azulado muy claro de base */
+  background-color: var(--color-bg);
   position: relative;
-  overflow: hidden; /* Evita que las burbujas generen scroll */
+  overflow: hidden;
 }
 
 /* =========================================
-   FORMAS DE FONDO (BURBUJAS)
+   BACKGROUND SHAPES (BUBBLES)
    ========================================= */
 .background-shapes {
   position: absolute;
@@ -19,7 +19,7 @@
   height: 100%;
   z-index: 0;
   overflow: hidden;
-  pointer-events: none; /* Para que no interfieran con los clicks */
+  pointer-events: none;
 }
 
 .shape {
@@ -27,16 +27,7 @@
   border-radius: 50%;
 }
 
-/*
-  Burbujas en capas con diferentes tonos para profundidad.
-  Tonos:
-  - Azul oficial: #1b2560
-  - Azul medio (más claro): #2f3a8f
-  - Azul claro: #5b7cfa
-  - Dorado: #ffb300
-*/
-
-/* Fondo profundo (muy grandes + mucho blur) */
+/* Deep background (very large + heavy blur) */
 .bubble-1 {
   width: 720px;
   height: 720px;
@@ -64,7 +55,7 @@
   filter: blur(65px);
 }
 
-/* Plano medio (medianas + blur medio) */
+/* Mid layer (medium blur) */
 .bubble-3 {
   width: 320px;
   height: 320px;
@@ -92,7 +83,7 @@
   filter: blur(22px);
 }
 
-/* Plano cercano (pequeñas + poco blur, más visibles) */
+/* Near layer (small + light blur) */
 .bubble-4 {
   width: 140px;
   height: 140px;
@@ -130,7 +121,7 @@
 }
 
 /* =========================================
-   CONTENIDO (Z-INDEX 10 PARA ESTAR SOBRE LAS BURBUJAS)
+   CONTENT (Z-INDEX 10)
    ========================================= */
 .header {
   position: relative;
@@ -139,60 +130,63 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.2rem 2rem;
-  /* Glassmorphism: Fondo semi-transparente con desenfoque */
   background-color: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  border-bottom: 3px solid #ffb300; 
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border-bottom: 3px solid var(--color-accent);
 }
 
 .school-name {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #1b2560;
+  color: var(--color-primary);
 }
 
 .nav-actions {
   display: flex;
-  gap: 1rem; /* Separación entre botones */
+  gap: 1rem;
   align-items: center;
 }
 
-/* Botón Secundario (Registrarse) */
+/* Secondary button (Register) */
 .btn-register {
   background-color: transparent;
-  color: #1b2560;
-  border: 2px solid #1b2560;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
   padding: 0.5rem 1.5rem;
   font-size: 1rem;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .btn-register:hover {
   background-color: rgba(27, 37, 96, 0.1);
 }
 
-/* Botón Principal (Iniciar Sesión) */
+/* Primary button (Login) */
 .btn-login {
-  background-color: #1b2560;
-  color: white;
-  border: 2px solid #1b2560;
+  background-color: var(--color-primary);
+  color: #fff;
+  border: 2px solid var(--color-primary);
   padding: 0.5rem 1.5rem;
   font-size: 1rem;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .btn-login:hover {
-  background-color: #ffb300; 
-  color: #1b2560;
-  border-color: #ffb300;
+  background-color: var(--color-accent);
+  color: var(--color-primary);
+  border-color: var(--color-accent);
 }
 
 .hero {
@@ -207,7 +201,6 @@
 }
 
 .hero-content {
-  /* Añadimos un panel sutil tipo vidrio para que el texto resalte sobre las burbujas */
   background: rgba(255, 255, 255, 0.6);
   padding: 3rem;
   border-radius: 16px;
@@ -219,60 +212,14 @@
 
 .hero-content h1 {
   font-size: 2.8rem;
-  color: #1b2560;
+  color: var(--color-primary);
   margin-bottom: 1rem;
   margin-top: 0;
 }
 
 .hero-content p {
   font-size: 1.2rem;
-  color: #444;
+  color: var(--color-text-light);
   max-width: 600px;
   margin: 0 auto;
-}
-
-/* =========================================
-   MODAL
-   ========================================= */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(27, 37, 96, 0.7); 
-  backdrop-filter: blur(5px); /* Desenfoque del fondo al abrir el modal */
-  -webkit-backdrop-filter: blur(5px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 2.5rem;
-  border-radius: 8px;
-  position: relative;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-  border-top: 4px solid #ffb300;
-}
-
-.close-btn {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  background: none;
-  border: none;
-  font-size: 1.8rem;
-  cursor: pointer;
-  color: #999;
-  padding: 0;
-  transition: color 0.2s;
-}
-
-.close-btn:hover {
-  color: #1b2560;
 }

@@ -1,5 +1,5 @@
 <div class="landing-page">
-  <!-- Contenedor de formas de fondo (Burbujas) -->
+  <!-- Background shapes (Bubbles) -->
   <div class="background-shapes">
     <div class="shape bubble-1"></div>
     <div class="shape bubble-2"></div>
@@ -18,8 +18,8 @@
       <span class="school-name">Colegio Marcela Paz</span>
     </div>
     <nav class="nav-actions">
-      <button class="btn-register" (click)="openRegister()">Registrarse</button>
-      <button class="btn-login" (click)="openLogin()">Iniciar Sesión</button>
+      <a routerLink="/register" class="btn-register">Registrarse</a>
+      <a routerLink="/login" class="btn-login">Iniciar Sesión</a>
     </nav>
   </header>
 
@@ -29,20 +29,4 @@
       <p>Plataforma oficial para el control y seguimiento administrativo de alumnos.</p>
     </div>
   </main>
-
-  <!-- Modal Overlay Login -->
-  <div class="modal-overlay" *ngIf="showLoginModal" (click)="closeLogin($event)">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <button class="close-btn" (click)="closeLogin($event)">&times;</button>
-      <app-login></app-login>
-    </div>
-  </div>
-
-  <!-- Modal Overlay Register -->
-  <div class="modal-overlay" *ngIf="showRegisterModal" (click)="closeRegister($event)">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <button class="close-btn" (click)="closeRegister($event)">&times;</button>
-      <app-register></app-register>
-    </div>
-  </div>
 </div>
