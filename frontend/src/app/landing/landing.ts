@@ -1,18 +1,21 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Login } from '../auth/login/login';
+import { Register } from '../auth/register/register';
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [CommonModule, Login],
+  imports: [CommonModule, Login, Register],
   templateUrl: './landing.html',
   styleUrl: './landing.css',
 })
 export class Landing {
   showLoginModal = false;
+  showRegisterModal = false;
 
   openLogin() {
+    this.showRegisterModal = false;
     this.showLoginModal = true;
   }
 
@@ -24,7 +27,14 @@ export class Landing {
   }
 
   openRegister() {
-    // Por ahora solo un alert, luego podemos hacer un modal o ruta
-    alert('Función de registro en construcción...');
+    this.showLoginModal = false;
+    this.showRegisterModal = true;
+  }
+
+  closeRegister(event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.showRegisterModal = false;
   }
 }

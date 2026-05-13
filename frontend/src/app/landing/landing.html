@@ -30,11 +30,19 @@
     </div>
   </main>
 
-  <!-- Modal Overlay -->
+  <!-- Modal Overlay Login -->
   <div class="modal-overlay" *ngIf="showLoginModal" (click)="closeLogin($event)">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <button class="close-btn" (click)="closeLogin($event)">&times;</button>
       <app-login></app-login>
+    </div>
+  </div>
+
+  <!-- Modal Overlay Register -->
+  <div class="modal-overlay" *ngIf="showRegisterModal" (click)="closeRegister($event)">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="closeRegister($event)">&times;</button>
+      <app-register></app-register>
     </div>
   </div>
 </div>
