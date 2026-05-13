@@ -79,6 +79,7 @@ controller/ → repository/ → H2/PostgreSQL
 - Angular 21 + standalone components (no modules).
 - Test runner: Vitest (not Karma/Jasmine).
 - Prettier config: `.prettierrc` in `frontend/`.
+- **Reglas y buenas prácticas obligatorias:** ver `frontend/docs/practicas.md`. Estructura de carpetas (core/shared/features), nomenclatura, signals, environments, lazy loading, paleta institucional, sin `any`.
 
 ## verify checklist after changes
 
