@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.UsuarioEntity;
-import com.example.demo.interfaces.UsuarioService;
+import com.example.demo.interfaces.IUsuarioService;
 import com.example.demo.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UsuarioServiceImpl implements UsuarioService {
+public class UsuarioServiceImpl implements IUsuarioService {
 
     @Autowired
     private UsuarioRepository repository;

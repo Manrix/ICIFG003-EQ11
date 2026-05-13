@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.UsuarioEntity;
-import com.example.demo.interfaces.UsuarioService;
+import com.example.demo.interfaces.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import java.util.Optional;
 public class UsuarioController {
 
     @Autowired
-    private UsuarioService usuarioService;
+    private IUsuarioService usuarioService;
 
     @GetMapping
     public Iterable<UsuarioEntity> getAll() {
