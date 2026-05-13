@@ -6,6 +6,8 @@ import { environment } from '../../../environments/environment';
 import type {
   RegistroAsistencia,
   RegistroAsistenciaCreate,
+  BatchRegistroAsistenciaRequest,
+  BatchRegistroAsistenciaResponse,
 } from '../../shared/models/asistencia.model';
 import { MOCK_REGISTROS } from './mock-data';
 
@@ -57,6 +59,40 @@ export class AsistenciaService {
     return this.createRegistro(registro);
   }
 
+  saveRegistrosBatch(
+    batch: BatchRegistroAsistenciaRequest,
+  ): Observable<BatchRegistroAsistenciaResponse> {
+    if (environment.useMockData) {
+      const saved: RegistroAsistencia[] = batch.registros.map((r) => ({
+        ...r,
+        id: Date.now() + Math.floor(Math.random() * 1000),
+      }));
+      return of({ savedRecords: saved, totalSaved: saved.length }).pipe(
+        delay(300),
+        tap((response) => {
+          this._registros.update((list) => {
+            const filtered = list.filter(
+              (l) => !response.savedRecords.some((s) => s.alumnoId === l.alumnoId && s.fecha === l.fecha),
+            );
+            return [...filtered, ...response.savedRecords];
+          });
+        }),
+      );
+    }
+    return this.http
+      .post<BatchRegistroAsistenciaResponse>(`${environment.apiUrl}/registros/batch`, batch)
+      .pipe(
+        tap((response) => {
+          this._registros.update((list) => {
+            const filtered = list.filter(
+              (l) => !response.savedRecords.some((s) => s.alumnoId === l.alumnoId && s.fecha === l.fecha),
+            );
+            return [...filtered, ...response.savedRecords];
+          });
+        }),
+      );
+  }
+
   deleteRegistro(id: number): Observable<void> {
     if (environment.useMockData) {
       return of(undefined).pipe(
@@ -65,7 +101,7 @@ export class AsistenciaService {
       );
     }
     return this.http
-      .delete<void>(`${environment.apiUrl}/asistencias/${id}`)
+      .delete<void>(`${environment.apiUrl}/registros/${id}`)
       .pipe(tap(() => this._registros.update((list) => list.filter((r) => r.id !== id))));
   }
 
@@ -78,7 +114,7 @@ export class AsistenciaService {
       );
     }
     return this.http
-      .post<RegistroAsistencia>(`${environment.apiUrl}/asistencias`, registro)
+      .post<RegistroAsistencia>(`${environment.apiUrl}/registros`, registro)
       .pipe(tap((r) => this._registros.update((list) => [...list, r])));
   }
 
@@ -94,7 +130,7 @@ export class AsistenciaService {
       );
     }
     return this.http
-      .put<RegistroAsistencia>(`${environment.apiUrl}/asistencias/${id}`, registro)
+      .put<RegistroAsistencia>(`${environment.apiUrl}/registros/${id}`, registro)
       .pipe(tap((r) => this._registros.update((list) => list.map((x) => (x.id === id ? r : x)))));
   }
 
@@ -104,7 +140,7 @@ export class AsistenciaService {
       return of([...data]).pipe(delay(300));
     }
     return this.http.get<RegistroAsistencia[]>(
-      `${environment.apiUrl}/asistencias?cursoId=${cursoId}&fecha=${fecha}`,
+      `${environment.apiUrl}/registros?cursoId=${cursoId}&fecha=${fecha}`,
     );
   }
 
@@ -114,7 +150,7 @@ export class AsistenciaService {
       return of([...data]).pipe(delay(300));
     }
     return this.http.get<RegistroAsistencia[]>(
-      `${environment.apiUrl}/asistencias?alumnoId=${alumnoId}`,
+      `${environment.apiUrl}/registros?alumnoId=${alumnoId}`,
     );
   }
 }

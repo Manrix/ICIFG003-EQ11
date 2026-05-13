@@ -45,6 +45,7 @@ public class JustificativoServiceImpl implements JustificativoService {
         Optional<JustificativoEntity> optionalJustificativo = repository.findById(id);
         if (optionalJustificativo.isPresent()) {
             JustificativoEntity justificativo = optionalJustificativo.get();
+            validateAusente(justificativo);
             justificativo.setMotivo(details.getMotivo());
             justificativo.setEstado(details.getEstado());
             justificativo.setDocumento(details.getDocumento());

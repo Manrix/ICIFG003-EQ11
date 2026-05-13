@@ -15,3 +15,12 @@ export interface RegistroAsistencia {
 }
 
 export type RegistroAsistenciaCreate = Omit<RegistroAsistencia, 'id'>;
+
+export interface BatchRegistroAsistenciaRequest {
+  registros: RegistroAsistenciaCreate[];
+}
+
+export interface BatchRegistroAsistenciaResponse {
+  savedRecords: RegistroAsistencia[];
+  totalSaved: number;
+}

@@ -51,12 +51,21 @@ export class AsistenciaTableComponent {
     const select = event.target as HTMLSelectElement;
     const estado = select.value as EstadoAsistencia;
     const reg = this.registroForAlumno(alumnoId);
-    this.cambiarEstado.emit({
-      alumnoId,
-      estado,
-      horaLlegada: reg?.horaLlegada ?? undefined,
-      observacion: reg?.observacion ?? undefined,
-    });
+    if (estado === EstadoAsistencia.ATRASADO) {
+      this.cambiarEstado.emit({
+        alumnoId,
+        estado,
+        horaLlegada: reg?.horaLlegada ?? undefined,
+        observacion: reg?.observacion ?? undefined,
+      });
+    } else {
+      this.cambiarEstado.emit({
+        alumnoId,
+        estado,
+        horaLlegada: undefined,
+        observacion: undefined,
+      });
+    }
   }
 
   onHoraLlegadaChange(alumnoId: number, event: Event): void {

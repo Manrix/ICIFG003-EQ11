@@ -15,6 +15,7 @@ import type { Alumno, AlumnoCreate } from '../../shared/models/alumno.model';
 import type {
   RegistroAsistencia,
   RegistroAsistenciaCreate,
+  BatchRegistroAsistenciaRequest,
 } from '../../shared/models/asistencia.model';
 import { EstadoAsistencia } from '../../shared/models/asistencia.model';
 import type { Justificativo, JustificativoCreate } from '../../shared/models/justificativo.model';
@@ -278,28 +279,40 @@ export class DashboardPage implements OnInit {
     const drafts = this.registroDrafts();
     if (drafts.size === 0) return;
 
+    const registros: RegistroAsistenciaCreate[] = [];
     for (const [alumnoId, draft] of drafts) {
-      const registro: RegistroAsistenciaCreate = {
+      registros.push({
         alumnoId,
         cursoId,
         fecha,
         estado: draft.estado,
         horaLlegada: draft.horaLlegada ?? null,
         observacion: draft.observacion ?? null,
-      };
-      this.asistenciaService.saveRegistro(registro).subscribe();
+      });
     }
 
-    this.registroDrafts.set(new Map());
-    setTimeout(() => {
-      this.asistenciaService.loadRegistros(cursoId, fecha);
-      Swal.fire({
-        icon: 'success',
-        title: 'Asistencia guardada',
-        timer: 1500,
-        showConfirmButton: false,
-      });
-    }, 400);
+    const request: BatchRegistroAsistenciaRequest = { registros };
+
+    this.asistenciaService.saveRegistrosBatch(request).subscribe({
+      next: (response) => {
+        this.registroDrafts.set(new Map());
+        this.asistenciaService.loadRegistros(cursoId, fecha);
+        Swal.fire({
+          icon: 'success',
+          title: 'Asistencia guardada',
+          text: `${response.totalSaved} registros guardados`,
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo guardar la asistencia. Verifica los datos e intenta nuevamente.',
+        });
+      },
+    });
   }
 
   verDetalle(alumnoId: number): void {

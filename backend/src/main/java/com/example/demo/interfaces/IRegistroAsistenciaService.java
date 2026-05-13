@@ -12,4 +12,5 @@ public interface IRegistroAsistenciaService {
     void deleteRegistro(Long id);
     List<RegistroAsistenciaEntity> getRegistrosByAlumnoId(Long alumnoId);
     java.util.Optional<RegistroAsistenciaEntity> getRegistroByAlumnoIdAndFecha(Long alumnoId, java.time.LocalDate fecha);
+    List<RegistroAsistenciaEntity> saveAll(List<RegistroAsistenciaEntity> registros);
 }
