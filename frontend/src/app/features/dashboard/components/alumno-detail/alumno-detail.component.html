@@ -1,0 +1,67 @@
+<div class="detail-overlay">
+  <div class="detail-card">
+    <div class="detail-header">
+      <div>
+        <h4>
+          <span class="user-icon">👤</span>
+          {{ alumno().nombre }} {{ alumno().apellido }}
+        </h4>
+        <div class="text-muted small">RUT: {{ alumno().rut }}</div>
+        <div class="mt-2">
+          <span
+            class="badge"
+            [class.bg-success]="alumno().estado === 'ACTIVO'"
+            [class.bg-secondary]="alumno().estado !== 'ACTIVO'"
+          >
+            {{ alumno().estado }}
+          </span>
+        </div>
+      </div>
+      <button class="btn btn-sm btn-outline-secondary" (click)="cerrar.emit()">Cerrar</button>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="detail-body">
+      <h6 class="section-title">Historial de Asistencia</h6>
+      <div class="table-responsive">
+        <table class="table table-sm table-hover">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th>Hora Llegada</th>
+              <th>Justificación</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (reg of registros(); track reg.id) {
+              <tr>
+                <td>{{ reg.fecha }}</td>
+                <td>
+                  @switch (reg.estado) {
+                    @case ('PRESENTE') {
+                      <span class="badge badge-presente">Presente</span>
+                    }
+                    @case ('AUSENTE') {
+                      <span class="badge badge-ausente">Ausente</span>
+                    }
+                    @case ('ATRASADO') {
+                      <span class="badge badge-atrasado">Atrasado</span>
+                    }
+                  }
+                </td>
+                <td>{{ reg.horaLlegada ?? '—' }}</td>
+                <td>{{ estadoJustificacion(justificativoForRegistro(reg.id)) }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="text-center text-muted py-3">Sin registros</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

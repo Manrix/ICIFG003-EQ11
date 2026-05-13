@@ -1,0 +1,45 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title">Justificar Inasistencia</h5>
+    <button type="button" class="btn-close" aria-label="Cerrar" (click)="cancelar()"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="mb-3">
+      <strong>Alumno:</strong> {{ alumnoNombre() }}<br />
+      <strong>Fecha:</strong> {{ registro().fecha }}
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="guardar()">
+      <div class="mb-3">
+        <label for="motivo" class="form-label">Motivo</label>
+        <textarea
+          id="motivo"
+          class="form-control"
+          formControlName="motivo"
+          rows="3"
+          placeholder="Describa el motivo de la inasistencia"
+        ></textarea>
+        @if (form.controls.motivo.invalid && form.controls.motivo.touched) {
+          <div class="form-text text-danger">El motivo es obligatorio (mínimo 5 caracteres).</div>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label for="documento" class="form-label">Documento (opcional)</label>
+        <input
+          id="documento"
+          type="text"
+          class="form-control"
+          formControlName="documento"
+          placeholder="Nombre del archivo o enlace"
+        />
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="cancelar()">Cancelar</button>
+    <button type="button" class="btn btn-gold" (click)="guardar()">Enviar Justificación</button>
+  </div>
+</div>

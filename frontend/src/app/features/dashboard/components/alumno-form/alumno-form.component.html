@@ -1,0 +1,55 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title">{{ alumno() ? 'Editar Alumno' : 'Nuevo Alumno' }}</h5>
+    <button type="button" class="btn-close" aria-label="Cerrar" (click)="cancelar()"></button>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="form" (ngSubmit)="guardar()">
+      <input type="hidden" formControlName="cursoId" />
+
+      <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre</label>
+        <input id="nombre" type="text" class="form-control" formControlName="nombre" />
+        @if (form.controls.nombre.invalid && form.controls.nombre.touched) {
+          <div class="form-text text-danger">El nombre es obligatorio.</div>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label for="apellido" class="form-label">Apellido</label>
+        <input id="apellido" type="text" class="form-control" formControlName="apellido" />
+        @if (form.controls.apellido.invalid && form.controls.apellido.touched) {
+          <div class="form-text text-danger">El apellido es obligatorio.</div>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label for="rut" class="form-label">RUT</label>
+        <input
+          id="rut"
+          type="text"
+          class="form-control"
+          formControlName="rut"
+          placeholder="12.345.678-9"
+        />
+        @if (form.controls.rut.invalid && form.controls.rut.touched) {
+          <div class="form-text text-danger">Formato válido: XX.XXX.XXX-X</div>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label for="estado" class="form-label">Estado</label>
+        <select id="estado" class="form-select" formControlName="estado">
+          <option value="ACTIVO">ACTIVO</option>
+          <option value="INACTIVO">INACTIVO</option>
+        </select>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="cancelar()">Cancelar</button>
+    <button type="button" class="btn btn-gold" (click)="guardar()">Guardar</button>
+  </div>
+</div>
