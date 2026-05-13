@@ -8,8 +8,8 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 export class Auth {
   private http = inject(HttpClient);
   
-  // URL temporal para pruebas, luego se ajustará a la de Spring Boot
-  private apiUrl = 'http://localhost:8080/api/auth/login';
+  // URL temporal para pruebas, apuntando al controlador de usuarios
+  private apiUrl = 'http://localhost:8080/api/v1/usuarios/login';
 
   // Usamos un BehaviorSubject para que los componentes puedan reaccionar a cambios de estado
   private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
