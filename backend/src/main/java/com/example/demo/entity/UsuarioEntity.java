@@ -1,7 +1,7 @@
 package com.example.demo.entity;
 
 import javax.persistence.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Data
@@ -20,7 +20,7 @@ public class UsuarioEntity {
     private String username;
     
     @NonNull
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     
     private String rol;
