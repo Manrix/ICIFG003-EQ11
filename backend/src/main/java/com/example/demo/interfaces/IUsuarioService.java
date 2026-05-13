@@ -3,7 +3,7 @@ package com.example.demo.interfaces;
 import com.example.demo.entity.UsuarioEntity;
 import java.util.Optional;
 
-public interface UsuarioService {
+public interface IUsuarioService {
     Iterable<UsuarioEntity> findAll();
     Optional<UsuarioEntity> findById(Long id);
     UsuarioEntity save(UsuarioEntity e);
