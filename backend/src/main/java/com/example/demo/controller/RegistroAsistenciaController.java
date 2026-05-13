@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.RegistroAsistenciaEntity;
-import com.example.demo.repository.RegistroAsistenciaRepository;
+import com.example.demo.interfaces.IRegistroAsistenciaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,16 +15,16 @@ import java.time.LocalDate;
 public class RegistroAsistenciaController {
 
     @Autowired
-    private RegistroAsistenciaRepository repository;
+    private IRegistroAsistenciaService service;
 
     @GetMapping
     public Iterable<RegistroAsistenciaEntity> getAll() {
-        return repository.findAll();
+        return service.getAllRegistros();
     }
 
     @GetMapping("/alumno/{alumnoId}")
     public Iterable<RegistroAsistenciaEntity> getByAlumno(@PathVariable Long alumnoId) {
-        return repository.findByAlumnoId(alumnoId);
+        return service.getRegistrosByAlumnoId(alumnoId);
     }
 
     @PostMapping
@@ -37,19 +37,19 @@ public class RegistroAsistenciaController {
             return ResponseEntity.badRequest().body("El ID del alumno es obligatorio");
         }
 
-        boolean Existe = repository.findByAlumnoIdAndFecha(registro.getAlumno().getId(), registro.getFecha()).isPresent();
+        boolean Existe = service.getRegistroByAlumnoIdAndFecha(registro.getAlumno().getId(), registro.getFecha()).isPresent();
         
         if (Existe) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("El alumno ya tiene un registro de asistencia para la fecha " + registro.getFecha());
         }
 
-        return new ResponseEntity<>(repository.save(registro), HttpStatus.CREATED);
+        return new ResponseEntity<>(service.createRegistro(registro), HttpStatus.CREATED);
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        repository.deleteById(id);
+        service.deleteRegistro(id);
         return ResponseEntity.noContent().build();
     }
 }

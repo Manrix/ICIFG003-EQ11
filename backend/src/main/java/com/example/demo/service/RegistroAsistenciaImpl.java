@@ -54,4 +54,15 @@ public class RegistroAsistenciaImpl implements IRegistroAsistenciaService {
             repository.deleteById(id);
         }
     }
+
+    @Override
+    public List<RegistroAsistenciaEntity> getRegistrosByAlumnoId(Long alumnoId) {
+        return StreamSupport.stream(repository.findByAlumnoId(alumnoId).spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<RegistroAsistenciaEntity> getRegistroByAlumnoIdAndFecha(Long alumnoId, java.time.LocalDate fecha) {
+        return repository.findByAlumnoIdAndFecha(alumnoId, fecha);
+    }
 }
