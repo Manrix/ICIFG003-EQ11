@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.AlumnoEntity;
-import com.example.demo.repository.AlumnoRepository;
+import com.example.demo.interfaces.IAlumnoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,21 +15,21 @@ import java.util.Optional;
 public class AlumnoController {
 
     @Autowired
-    private AlumnoRepository repository;
+    private IAlumnoService service;
 
     @GetMapping
     public Iterable<AlumnoEntity> getAll() {
-        return repository.findAll();
+        return service.findAll();
     }
 
     @PostMapping
     public ResponseEntity<AlumnoEntity> create(@RequestBody AlumnoEntity alumno) {
-        return new ResponseEntity<>(repository.save(alumno), HttpStatus.CREATED);
+        return new ResponseEntity<>(service.save(alumno), HttpStatus.CREATED);
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        repository.deleteById(id);
+        service.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

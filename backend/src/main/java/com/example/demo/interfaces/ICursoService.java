@@ -8,5 +8,7 @@ public interface ICursoService {
     List<CursoEntity> getAllCursos();
     CursoEntity getCursoById(Long id);
     CursoEntity createCurso(CursoEntity curso);
+    CursoEntity updateCurso(Long id, CursoEntity curso);
+    boolean existsById(Long id);
     void deleteCurso(Long id);
 }
