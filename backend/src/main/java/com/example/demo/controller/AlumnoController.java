@@ -29,7 +29,7 @@ public class AlumnoController {
     
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.deleteById(id);
+        service.deactivateById(id);
         return ResponseEntity.noContent().build();
     }
 }

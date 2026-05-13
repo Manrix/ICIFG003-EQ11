@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.example.demo.enums.EstadoAsistencia;
 
@@ -25,7 +26,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="registro_asistencia")
+@Table(name="registro_asistencia", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"alumno_id", "fecha"})
+})
 public class RegistroAsistenciaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

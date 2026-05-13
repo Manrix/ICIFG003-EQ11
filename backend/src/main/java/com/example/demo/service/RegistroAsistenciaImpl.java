@@ -38,10 +38,7 @@ public class RegistroAsistenciaImpl implements IRegistroAsistenciaService {
         Optional<RegistroAsistenciaEntity> optionalRegistro = repository.findById(id);
         if (optionalRegistro.isPresent()) {
             RegistroAsistenciaEntity registro = optionalRegistro.get();
-            registro.setAlumno(registroDetails.getAlumno());
-            registro.setFecha(registroDetails.getFecha());
             registro.setHoraLlegada(registroDetails.getHoraLlegada());
-            registro.setEstado(registroDetails.getEstado());
             registro.setObservacion(registroDetails.getObservacion());
             return repository.save(registro);
         }

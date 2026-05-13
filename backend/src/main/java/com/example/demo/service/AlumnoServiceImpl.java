@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.AlumnoEntity;
+import com.example.demo.enums.EstadoAlumno;
 import com.example.demo.interfaces.IAlumnoService;
 import com.example.demo.repository.AlumnoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +39,11 @@ public class AlumnoServiceImpl implements IAlumnoService {
     }
 
     @Override
-    public void deleteById(long id) {
-        if (repository.existsById(id)) {
-            repository.deleteById(id);
+    public void deactivateById(long id) {
+        AlumnoEntity alumno = repository.findById(id).orElse(null);
+        if (alumno != null) {
+            alumno.setEstado(EstadoAlumno.INACTIVO);
+            repository.save(alumno);
         }
     }
 }
