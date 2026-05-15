@@ -20,12 +20,13 @@ public class AlumnoEntity {
 
     private String apellido;
     
+    private String apellido;
+    
     @NonNull
     private String rut;
     
-    @ManyToOne
-    @JoinColumn(name = "curso_id")
-    private CursoEntity curso;
+    @Column(name = "curso_id")
+    private Long cursoId;
 
     @Enumerated(EnumType.STRING)
     private EstadoAlumno estado = EstadoAlumno.ACTIVO;

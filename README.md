@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 # Proyecto de Aplicaciones y Tecnologías de la Web
 
 Repositorio monorepo con una aplicación de control de asistencia:
@@ -86,3 +87,5 @@ El frontend arranca en `http://localhost:4200`.
 - Modelo de datos y entidades: `backend/docs/DBA.md`.
 - Reglas y prácticas de frontend: `frontend/docs/practicas.md`.
 
+=======
+>>>>>>> Stashed changes
