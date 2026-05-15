@@ -40,7 +40,7 @@ public class DTOMapper {
                 .apellido(entity.getApellido())
                 .rut(entity.getRut())
                 .estado(entity.getEstado() != null ? entity.getEstado().name() : null)
-                .cursoId(entity.getCurso() != null ? entity.getCurso().getId() : null)
+                .cursoId(entity.getCursoId())
                 .build();
     }
 
@@ -52,20 +52,16 @@ public class DTOMapper {
                 .apellido(dto.getApellido())
                 .rut(dto.getRut())
                 .estado(dto.getEstado() != null ? EstadoAlumno.valueOf(dto.getEstado()) : null)
+                .cursoId(dto.getCursoId())
                 .build();
-        if (dto.getCursoId() != null) {
-            CursoEntity curso = new CursoEntity();
-            curso.setId(dto.getCursoId());
-            entity.setCurso(curso);
-        }
         return entity;
     }
 
     public RegistroAsistenciaDTO toDTO(RegistroAsistenciaEntity entity) {
         if (entity == null) return null;
         Long cursoId = null;
-        if (entity.getAlumno() != null && entity.getAlumno().getCurso() != null) {
-            cursoId = entity.getAlumno().getCurso().getId();
+        if (entity.getAlumno() != null) {
+            cursoId = entity.getAlumno().getCursoId();
         }
         return RegistroAsistenciaDTO.builder()
                 .id(entity.getId())

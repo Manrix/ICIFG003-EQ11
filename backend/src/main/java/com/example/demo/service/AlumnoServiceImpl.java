@@ -39,7 +39,12 @@ public class AlumnoServiceImpl implements IAlumnoService {
     }
 
     @Override
-    public void deactivateById(long id) {
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
+
+    @Override
+    public void deactivateById(Long id) {
         AlumnoEntity alumno = repository.findById(id).orElse(null);
         if (alumno != null) {
             alumno.setEstado(EstadoAlumno.INACTIVO);

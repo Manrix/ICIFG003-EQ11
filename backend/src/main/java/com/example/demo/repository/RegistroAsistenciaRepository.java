@@ -14,6 +14,6 @@ public interface RegistroAsistenciaRepository extends CrudRepository<RegistroAsi
     List<RegistroAsistenciaEntity> findByAlumnoId(Long alumnoId);
     Optional<RegistroAsistenciaEntity> findByAlumnoIdAndFecha(Long alumnoId, LocalDate fecha);
 
-    @Query("SELECT r FROM RegistroAsistenciaEntity r WHERE r.alumno.curso.id = ?1 AND r.fecha = ?2")
+    @Query("SELECT r FROM RegistroAsistenciaEntity r WHERE r.alumno.cursoId = ?1 AND r.fecha = ?2")
     List<RegistroAsistenciaEntity> findByAlumnoCursoIdAndFecha(Long cursoId, LocalDate fecha);
 }

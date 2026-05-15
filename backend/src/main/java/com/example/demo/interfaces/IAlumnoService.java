@@ -14,6 +14,8 @@ public interface IAlumnoService {
 	
 	AlumnoEntity save(AlumnoEntity alumno);
 	
-	void deactivateById(long id);
+	void deleteById(Long id);
+
+	void deactivateById(Long id);
 
 }
